@@ -7,6 +7,7 @@ import xyz.lotho.me.skyblock.command.Command;
 import xyz.lotho.me.skyblock.command.CommandSource;
 import xyz.lotho.me.skyblock.command.impl.island.IslandCreateCommand;
 import xyz.lotho.me.skyblock.command.impl.island.IslandHomeCommand;
+import xyz.lotho.me.skyblock.command.impl.island.IslandMembersCommand;
 import xyz.lotho.me.skyblock.command.impl.island.IslandResetCommand;
 
 public class IslandCommand extends Command {
@@ -25,7 +26,8 @@ public class IslandCommand extends Command {
         this.addSubCommands(
                 new IslandCreateCommand(),
                 new IslandHomeCommand(),
-                new IslandResetCommand()
+                new IslandResetCommand(),
+                new IslandMembersCommand()
         );
     }
 

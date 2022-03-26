@@ -5,10 +5,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.managers.member.Member;
+import xyz.lotho.me.skyblock.managers.util.IslandRole;
 import xyz.lotho.me.skyblock.utils.chat.Chat;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class IslandManager {
@@ -43,9 +45,13 @@ public class IslandManager {
         Location cornerTwo = new Location(center.getWorld(), center.getX() + radius, center.getY() - radius, center.getZ() - radius);
 
         Island island = new Island(this.instance);
+        island.setMembersArray(new ArrayList<>());
+
+        Document membersDocument = document.get("members", new Document());
+        membersDocument.forEach((uuid, role) -> island.addMember(UUID.fromString(uuid), IslandRole.valueOf(role.toString())));
+
         island.setIslandID(document.getInteger("_id"));
         island.setIslandOwner(UUID.fromString(document.getString("islandOwner")));
-        island.setMembersArray(document.get("members", new ArrayList<>()));
         island.setCenter(center);
         island.setCornerOne(cornerOne);
         island.setCornerTwo(cornerTwo);
@@ -72,13 +78,22 @@ public class IslandManager {
             island.setRadius(skyblockIsland.getRadius());
             island.setCreatedAt(System.currentTimeMillis());
 
+            island.addMember(player.getUniqueId(), IslandRole.ISLAND_OWNER);
+
             this.getIslandsArray().add(island);
+
+            Document islandMembers = new Document();
+            for (HashMap<UUID, IslandRole> object : island.getMembersArray()) {
+                object.forEach((uuid, role) -> {
+                    islandMembers.append(uuid.toString(), role.toString());
+                });
+            }
 
             Document document = new Document()
                     .append("_id", island.getIslandID())
                     .append("islandOwner", island.getIslandOwner().toString())
                     .append("islandRadius", island.getRadius())
-                    .append("members", island.getMembersArray())
+                    .append("members", islandMembers)
                     .append("center", new Document()
                             .append("x", island.getCenter().getBlockX())
                             .append("y", island.getCenter().getBlockY())

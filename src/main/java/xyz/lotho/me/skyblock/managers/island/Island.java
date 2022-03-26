@@ -19,12 +19,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.managers.member.Member;
+import xyz.lotho.me.skyblock.managers.util.IslandRole;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -45,7 +47,7 @@ public class Island {
     private Location center, cornerOne, cornerTwo;
 
     @Getter @Setter
-    private ArrayList<UUID> membersArray;
+    private ArrayList<HashMap<UUID, IslandRole>> membersArray;
 
     @Getter @Setter
     private long createdAt;
@@ -65,8 +67,14 @@ public class Island {
         return region.contains(BlockVector3.at(blockLocation.getX(), blockLocation.getBlockY(), blockLocation.getBlockZ()));
     }
 
+    public void addMember(UUID uuid, IslandRole islandRole) {
+        HashMap<UUID, IslandRole> islandMember = new HashMap<>();
+        islandMember.put(uuid, islandRole);
+        this.getMembersArray().add(islandMember);
+    }
+
     public void loadTheme() throws IOException {
-        File defaultSchematic = new File(this.instance.getDataFolder().getAbsolutePath() + "./schematics/" + "endIsland" + ".schem");
+        File defaultSchematic = new File(this.instance.getDataFolder().getAbsolutePath() + "/schematics/" + "endIsland" + ".schem");
 
         BlockVector3 pasteLocation = BlockVector3.at(this.getCenter().getBlockX(), this.getCenter().getBlockY(), this.getCenter().getBlockZ());
         ClipboardFormat format = ClipboardFormats.findByFile(defaultSchematic);
