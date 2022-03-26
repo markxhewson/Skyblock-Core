@@ -1,4 +1,4 @@
-package xyz.lotho.me.skyblock.utils;
+package xyz.lotho.me.skyblock.utils.chat;
 
 import org.bukkit.ChatColor;
 

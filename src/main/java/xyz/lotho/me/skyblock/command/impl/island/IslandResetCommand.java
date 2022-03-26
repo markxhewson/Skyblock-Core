@@ -8,16 +8,16 @@ import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.command.Command;
 import xyz.lotho.me.skyblock.command.CommandSource;
 import xyz.lotho.me.skyblock.command.CompletableCommand;
-import xyz.lotho.me.skyblock.managers.island.Island;
+import xyz.lotho.me.skyblock.interfaces.ResetIslandConfirmationMenu;
 import xyz.lotho.me.skyblock.managers.member.Member;
 import xyz.lotho.me.skyblock.utils.chat.Chat;
 
-public class IslandHomeCommand extends Command implements CompletableCommand {
+public class IslandResetCommand extends Command implements CompletableCommand {
 
-    public IslandHomeCommand() {
-        super("home", null);
+    public IslandResetCommand() {
+        super("reset", null);
 
-        this.setDescription("Go to your island.");
+        this.setDescription("Reset your island.");
 
         this.removePermittedSources(CommandSource.CONSOLE, CommandSource.COMMAND_BLOCK);
 
@@ -31,20 +31,18 @@ public class IslandHomeCommand extends Command implements CompletableCommand {
         Member member = Skyblock.getInstance().getMemberManager().getMember(player.getUniqueId());
 
         if (!member.hasIsland()) {
-            player.sendMessage(Chat.color("&c&l<!> &cYou do not have an island! Create one using /island create!"));
+            player.sendMessage(Chat.color("&c&l<!> &cYou do not have an island to reset!"));
             return;
         }
 
-        Island island = member.getIsland();
-
-        player.teleport(island.getCenter());
-        player.sendMessage(Chat.color("&a&l<!> &aTransporting you to your island home.."));
+        new ResetIslandConfirmationMenu(Skyblock.getInstance()).open(player);
     }
 
     @Override
     public LiteralCommandNode<?> getCompletions() {
         return LiteralArgumentBuilder.literal("island")
-                .then(LiteralArgumentBuilder.literal("home"))
+                .then(LiteralArgumentBuilder.literal("create"))
                 .build();
     }
+
 }

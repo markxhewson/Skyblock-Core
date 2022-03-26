@@ -6,7 +6,6 @@ import org.bson.Document;
 import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.managers.island.Island;
 
-import java.util.UUID;
 
 public class MongoUtils {
 
@@ -21,6 +20,8 @@ public class MongoUtils {
     }
 
     public void replaceOneIsland(Island island, Document document) {
-        this.instance.getMongoManager().getIslandsCollection().replaceOne(Filters.eq("_id", island.getIslandID()), document, new UpdateOptions().upsert(true), (result, throwable) -> {});
+        this.instance.getMongoManager().getIslandsCollection().replaceOne(Filters.eq("_id", island.getIslandID()), document, new UpdateOptions().upsert(true), (result, throwable) -> {
+            if (throwable != null) System.out.println(throwable);
+        });
     }
 }

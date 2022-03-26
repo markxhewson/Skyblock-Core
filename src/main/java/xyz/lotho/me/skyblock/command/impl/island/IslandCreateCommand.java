@@ -9,7 +9,7 @@ import xyz.lotho.me.skyblock.command.Command;
 import xyz.lotho.me.skyblock.command.CommandSource;
 import xyz.lotho.me.skyblock.command.CompletableCommand;
 import xyz.lotho.me.skyblock.managers.member.Member;
-import xyz.lotho.me.skyblock.utils.Chat;
+import xyz.lotho.me.skyblock.utils.chat.Chat;
 
 public class IslandCreateCommand extends Command implements CompletableCommand {
 

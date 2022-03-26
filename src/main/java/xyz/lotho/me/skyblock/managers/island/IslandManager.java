@@ -5,11 +5,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.managers.member.Member;
-import xyz.lotho.me.skyblock.utils.Chat;
+import xyz.lotho.me.skyblock.utils.chat.Chat;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 public class IslandManager {
@@ -26,6 +25,16 @@ public class IslandManager {
     }
 
     public void addIsland(Document document) {
+        Island island = this.loadIsland(document);
+        this.getIslandsArray().add(island);
+    }
+
+    public void setLastIsland(Document document) {
+        Island island = this.loadIsland(document);
+        this.instance.setLastIsland(island);
+    }
+
+    public Island loadIsland(Document document) {
         Document centerData = document.get("center", new Document());
         int radius = document.getInteger("islandRadius");
 
@@ -33,17 +42,17 @@ public class IslandManager {
         Location cornerOne = new Location(center.getWorld(), center.getX() - radius, center.getY() + radius, center.getZ() + radius);
         Location cornerTwo = new Location(center.getWorld(), center.getX() + radius, center.getY() - radius, center.getZ() - radius);
 
-        this.islandsArray.add(
-                new Island(
-                        this.instance,
-                        document.getInteger("_id"),
-                        UUID.fromString(document.getString("islandOwner")),
-                        document.get("members", new ArrayList<>()),
-                        center,
-                        cornerOne,
-                        cornerTwo
-                )
-        );
+        Island island = new Island(this.instance);
+        island.setIslandID(document.getInteger("_id"));
+        island.setIslandOwner(UUID.fromString(document.getString("islandOwner")));
+        island.setMembersArray(document.get("members", new ArrayList<>()));
+        island.setCenter(center);
+        island.setCornerOne(cornerOne);
+        island.setCornerTwo(cornerTwo);
+        island.setRadius(radius);
+        island.setCreatedAt(document.getLong("createdAt"));
+
+        return island;
     }
 
     public void createIsland(Player player) {
@@ -53,33 +62,41 @@ public class IslandManager {
         this.instance.getMongoManager().getIslandsCollection().countDocuments((documents, throwable) -> {
             int islandID = documents.intValue() + 1;
 
-            this.islandsArray.add(
-                    new Island(
-                            this.instance,
-                            documents.intValue() + 1,
-                            player.getUniqueId(),
-                            new ArrayList<>(),
-                            skyblockIsland.getCenter(),
-                            skyblockIsland.getCornerOne(),
-                            skyblockIsland.getCornerTwo()
-                    )
-            );
+            Island island = new Island(this.instance);
+            island.setIslandID(islandID);
+            island.setIslandOwner(player.getUniqueId());
+            island.setMembersArray(new ArrayList<>());
+            island.setCenter(skyblockIsland.getCenter());
+            island.setCornerOne(skyblockIsland.getCornerOne());
+            island.setCornerTwo(skyblockIsland.getCornerTwo());
+            island.setRadius(skyblockIsland.getRadius());
+            island.setCreatedAt(System.currentTimeMillis());
+
+            this.getIslandsArray().add(island);
 
             Document document = new Document()
-                    .append("_id", islandID)
-                    .append("islandOwner", player.getUniqueId().toString())
-                    .append("islandRadius", skyblockIsland.getRadius())
-                    .append("members", new ArrayList<>())
+                    .append("_id", island.getIslandID())
+                    .append("islandOwner", island.getIslandOwner().toString())
+                    .append("islandRadius", island.getRadius())
+                    .append("members", island.getMembersArray())
                     .append("center", new Document()
-                            .append("x", skyblockIsland.getCenter().getBlockX())
-                            .append("y", skyblockIsland.getCenter().getBlockY())
-                            .append("z", skyblockIsland.getCenter().getBlockZ())
-                    );
+                            .append("x", island.getCenter().getBlockX())
+                            .append("y", island.getCenter().getBlockY())
+                            .append("z", island.getCenter().getBlockZ())
+                    )
+                    .append("createdAt", island.getCreatedAt());
 
-            this.instance.getMongoUtils().replaceOneIsland(this.findIslandByID(islandID), document);
+            try {
+                island.loadTheme();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            this.instance.getMongoUtils().replaceOneIsland(island, document);
+            this.instance.setLastIsland(island);
 
             Member member = this.instance.getMemberManager().getMember(player.getUniqueId());
-            member.setIsland(this.findIslandByID(islandID));
+            member.setIsland(island);
 
             player.sendMessage(Chat.color("&a&l<!> &aYour island has been created! &7You can travel to it using /island home!"));
         });

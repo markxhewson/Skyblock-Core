@@ -1,12 +1,8 @@
 package xyz.lotho.me.skyblock;
 
-import com.mongodb.Block;
-import com.mongodb.async.SingleResultCallback;
+import com.mongodb.client.model.Sorts;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.network.protocol.status.PacketStatusOutServerInfo;
-import org.bson.Document;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,14 +10,15 @@ import xyz.lotho.me.skyblock.command.CommandAPI;
 import xyz.lotho.me.skyblock.command.impl.IslandCommand;
 import xyz.lotho.me.skyblock.database.MongoManager;
 import xyz.lotho.me.skyblock.database.utils.MongoUtils;
+import xyz.lotho.me.skyblock.listeners.InventoryListener;
+import xyz.lotho.me.skyblock.listeners.IslandProtectionListener;
 import xyz.lotho.me.skyblock.listeners.MemberListener;
 import xyz.lotho.me.skyblock.managers.island.Island;
 import xyz.lotho.me.skyblock.managers.island.IslandManager;
 import xyz.lotho.me.skyblock.managers.member.MemberManager;
-import xyz.lotho.me.skyblock.world.VoidWorldGenerator;
+import xyz.lotho.me.skyblock.utils.world.VoidWorldGenerator;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 
 public final class Skyblock extends JavaPlugin {
@@ -69,18 +66,27 @@ public final class Skyblock extends JavaPlugin {
                 new IslandCommand()
         );
 
-        this.getMongoManager().getIslandsCollection().find().forEach(document -> {
+        // load all island data into IslandManager cache
+        this.getMongoManager().getIslandsCollection().find().sort(Sorts.ascending("createdAt")).forEach(document -> {
             System.out.println(document.toJson());
             this.getIslandManager().addIsland(document);
         }, (result, t) -> {
-            System.out.println("Finished loading islands!");
+            System.out.println("Finished loading " + this.getIslandManager().getIslandsArray().size() + " islands!");
         });
 
         this.loadListeners();
 
-        this.getServer().getScheduler().runTaskLater(this, () -> {
-            System.out.println(this.getIslandManager().getIslandsArray());
-        }, 100L);
+        // save the last island in the database so new islands don't overlap with each other
+        this.getMongoManager().getIslandsCollection().find().sort(Sorts.descending("createdAt")).first((document, throwable) -> {
+            if (throwable != null) this.getIslandManager().setLastIsland(document);
+        });
+
+        this.getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+            System.out.println("Running save island task..");
+            for (Island island : this.getIslandManager().getIslandsArray()) {
+                island.save();
+            }
+        }, 20 * 60 * 60, 20 * 60 * 60); // task will run every hour to async save every island's updated data to the database
     }
 
     @Override
@@ -90,7 +96,9 @@ public final class Skyblock extends JavaPlugin {
 
     public void loadListeners() {
         Arrays.asList(
-                new MemberListener(this)
+                new MemberListener(this),
+                new IslandProtectionListener(this),
+                new InventoryListener(this)
         ).forEach(listener -> this.getServer().getPluginManager().registerEvents(listener, this));
     }
 }

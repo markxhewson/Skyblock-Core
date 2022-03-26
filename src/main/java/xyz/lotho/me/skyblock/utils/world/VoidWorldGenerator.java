@@ -1,6 +1,5 @@
-package xyz.lotho.me.skyblock.world;
+package xyz.lotho.me.skyblock.utils.world;
 
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
 
