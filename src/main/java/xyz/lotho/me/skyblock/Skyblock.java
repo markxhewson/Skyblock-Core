@@ -45,6 +45,8 @@ public final class Skyblock extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        this.saveDefaultConfig();
+
         mongoManager = new MongoManager(this);
         memberManager = new MemberManager(this);
         islandManager = new IslandManager(this);
@@ -92,6 +94,7 @@ public final class Skyblock extends JavaPlugin {
     @Override
     public void onDisable() {
         this.mongoManager.destroy();
+
     }
 
     public void loadListeners() {
