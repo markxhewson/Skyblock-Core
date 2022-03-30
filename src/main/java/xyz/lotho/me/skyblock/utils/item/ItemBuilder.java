@@ -4,13 +4,11 @@ import com.google.gson.Gson;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 import xyz.lotho.me.skyblock.utils.chat.Chat;
 
@@ -201,7 +199,7 @@ public class ItemBuilder {
      * Sets the Displayname of the ItemStack
      * @param displayname Displayname for the ItemStack
      */
-    public ItemBuilder displayname(String displayname) {
+    public ItemBuilder setDisplayname(String displayname) {
         Validate.notNull(displayname, "The Displayname is null.");
         this.displayname = Chat.color(displayname);
         return this;

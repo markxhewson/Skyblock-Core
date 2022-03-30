@@ -8,22 +8,17 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.utils.item.ItemBuilder;
 
 public abstract class Menu implements InventoryHolder {
 
     protected Inventory inventory;
     protected final String inventoryName;
-    protected final int size;
 
     protected ItemStack FILLER_GLASS = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
-    public Menu(String inventoryName, int size) {
+    public Menu(String inventoryName) {
         this.inventoryName = inventoryName;
-        this.size = size;
-
-        this.inventory = Bukkit.createInventory(null, this.size, this.inventoryName);
     }
 
     public abstract String getMenuName();
@@ -35,7 +30,8 @@ public abstract class Menu implements InventoryHolder {
     public abstract void setItems();
 
     public void open(Player player) {
-        inventory = Bukkit.createInventory(this, getSlots(), getMenuName());
+        this.inventory = Bukkit.createInventory(this, getSlots(), getMenuName());
+
         this.setItems();
         this.fillRemainingSlots();
 
@@ -43,7 +39,7 @@ public abstract class Menu implements InventoryHolder {
     }
 
     @Override
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return inventory;
     }
 

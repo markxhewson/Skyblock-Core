@@ -15,7 +15,7 @@ public class ResetIslandConfirmationMenu extends Menu {
     private Skyblock instance;
 
     public ResetIslandConfirmationMenu(Skyblock instance) {
-        super("Reset Island Confirmation Menu", 27);
+        super("Reset Island Confirmation Menu");
 
         this.instance = instance;
 
@@ -34,8 +34,18 @@ public class ResetIslandConfirmationMenu extends Menu {
 
     @Override
     public void setItems() {
-        super.getInventory().setItem(12, new ItemBuilder(Material.GREEN_BANNER).displayname("&a&lConfirm").lore("", "&c&lWARNING", "&7All progress for this island will be", "&7permanently lost, are you sure?", "", "&7(( Click to reset island! ))").build());
-        super.getInventory().setItem(14, new ItemBuilder(Material.RED_BANNER).displayname("&c&lCancel").lore("", "&7(( Click to cancel island reset! ))").build());
+        super.getInventory().setItem(12,
+                new ItemBuilder(Material.GREEN_BANNER)
+                        .setDisplayname("&a&lConfirm")
+                        .lore("", "&c&lWARNING", "&7All progress for this island will be", "&7permanently lost, are you sure?", "", "&7&o(( &f&oClick&r &7&oto reset island! ))")
+                        .build()
+        );
+        super.getInventory().setItem(14,
+                new ItemBuilder(Material.RED_BANNER)
+                        .setDisplayname("&c&lCancel")
+                        .lore("", "&7&i(( &f&oClick&r &7&oto cancel island reset! ))")
+                        .build()
+        );
     }
 
     @Override
