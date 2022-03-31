@@ -5,10 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import xyz.lotho.me.skyblock.command.Command;
 import xyz.lotho.me.skyblock.command.CommandSource;
-import xyz.lotho.me.skyblock.command.impl.island.IslandCreateCommand;
-import xyz.lotho.me.skyblock.command.impl.island.IslandHomeCommand;
-import xyz.lotho.me.skyblock.command.impl.island.IslandMembersCommand;
-import xyz.lotho.me.skyblock.command.impl.island.IslandResetCommand;
+import xyz.lotho.me.skyblock.command.impl.island.*;
 
 public class IslandCommand extends Command {
 
@@ -27,7 +24,8 @@ public class IslandCommand extends Command {
                 new IslandCreateCommand(),
                 new IslandHomeCommand(),
                 new IslandResetCommand(),
-                new IslandMembersCommand()
+                new IslandMembersCommand(),
+                new IslandInviteCommand()
         );
     }
 

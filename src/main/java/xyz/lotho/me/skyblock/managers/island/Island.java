@@ -18,12 +18,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import xyz.lotho.me.skyblock.Skyblock;
-import xyz.lotho.me.skyblock.managers.member.Member;
-import xyz.lotho.me.skyblock.managers.util.IslandRole;
+import xyz.lotho.me.skyblock.managers.island.member.IslandMember;
+import xyz.lotho.me.skyblock.managers.island.member.IslandMemberManager;
+import xyz.lotho.me.skyblock.managers.island.member.IslandRole;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ public class Island {
     private Location center, cornerOne, cornerTwo;
 
     @Getter @Setter
-    private ArrayList<HashMap<UUID, IslandRole>> membersArray;
+    private IslandMemberManager islandMemberManager;
 
     @Getter @Setter
     private long createdAt;
@@ -55,6 +55,8 @@ public class Island {
 
     public Island(Skyblock instance) {
         this.instance = instance;
+
+        this.islandMemberManager = new IslandMemberManager(this.instance);
     }
 
     public boolean isBlockWithinBounds(Block block) {
@@ -68,9 +70,7 @@ public class Island {
     }
 
     public void addMember(UUID uuid, IslandRole islandRole) {
-        HashMap<UUID, IslandRole> islandMember = new HashMap<>();
-        islandMember.put(uuid, islandRole);
-        this.getMembersArray().add(islandMember);
+        this.getIslandMemberManager().addMember(uuid, islandRole);
     }
 
     public void loadTheme() throws IOException {
@@ -102,18 +102,24 @@ public class Island {
 
         new CuboidRegion(one, two).forEach(blockVector3 -> {
             Location location = new Location(this.instance.getIslandWorld(), blockVector3.getBlockX(), blockVector3.getBlockY(), blockVector3.getBlockZ());
-            this.instance.getIslandWorld().getBlockAt(location).setType(Material.AIR);
+            if (location.getBlock().getType() != Material.AIR) this.instance.getIslandWorld().getBlockAt(location).setType(Material.AIR);
         });
 
         this.loadTheme();
     }
 
     public void save() {
+        Document islandMembers = new Document();
+
+        this.getIslandMemberManager().getIslandMembers().forEach(((uuid, islandMember) -> {
+            islandMembers.append(uuid.toString(), islandMember.getIslandRole().toString());
+        }));
+
         Document document = new Document()
                 .append("_id", this.getIslandID())
                 .append("islandOwner", this.getIslandOwner().toString())
                 .append("islandRadius", this.getRadius())
-                .append("members", this.getMembersArray())
+                .append("members", islandMembers)
                 .append("center", new Document()
                         .append("x", this.getCenter().getBlockX())
                         .append("y", this.getCenter().getBlockY())

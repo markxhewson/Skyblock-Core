@@ -12,14 +12,10 @@ import xyz.lotho.me.skyblock.utils.item.ItemBuilder;
 
 public class ResetIslandConfirmationMenu extends Menu {
 
-    private Skyblock instance;
+    private final Skyblock instance;
 
     public ResetIslandConfirmationMenu(Skyblock instance) {
-        super("Reset Island Confirmation Menu");
-
         this.instance = instance;
-
-        setItems();
     }
 
     @Override

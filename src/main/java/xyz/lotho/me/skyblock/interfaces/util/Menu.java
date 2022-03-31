@@ -12,14 +12,9 @@ import xyz.lotho.me.skyblock.utils.item.ItemBuilder;
 
 public abstract class Menu implements InventoryHolder {
 
-    protected Inventory inventory;
-    protected final String inventoryName;
-
+    protected Inventory inventory = null;
     protected ItemStack FILLER_GLASS = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, " ").build();
 
-    public Menu(String inventoryName) {
-        this.inventoryName = inventoryName;
-    }
 
     public abstract String getMenuName();
 
@@ -39,7 +34,7 @@ public abstract class Menu implements InventoryHolder {
     }
 
     @Override
-    public @NotNull Inventory getInventory() {
+    public Inventory getInventory() {
         return inventory;
     }
 

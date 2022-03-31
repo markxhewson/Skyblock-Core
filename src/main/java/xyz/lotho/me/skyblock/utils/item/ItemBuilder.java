@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
+import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.utils.chat.Chat;
 
 import java.lang.reflect.InvocationTargetException;
@@ -37,6 +40,7 @@ public class ItemBuilder {
         if(material == null) material = Material.AIR;
         this.item = new ItemStack(material);
         this.material = material;
+        this.meta = this.item.getItemMeta();
     }
 
     /** Initalizes the ItemBuilder with {@link org.bukkit.Material} and Amount */
@@ -295,6 +299,22 @@ public class ItemBuilder {
     public ItemBuilder glow() {
         enchant(material != Material.BOW ? Enchantment.ARROW_INFINITE : Enchantment.LUCK, 10);
         flag(ItemFlag.HIDE_ENCHANTS);
+        return this;
+    }
+
+    /**
+     * Sets the Skin for the Skull
+     * @param offlinePlayer Username of the Skull
+     * @deprecated Make it yourself - This Meta destrys the already setted Metas
+     */
+    @Deprecated
+    public ItemBuilder owner(OfflinePlayer offlinePlayer) {
+        Validate.notNull(offlinePlayer, "The offlinePlayer is null.");
+        if((material == Material.PLAYER_HEAD)) {
+            SkullMeta smeta = (SkullMeta) meta;
+            smeta.setOwningPlayer(offlinePlayer);
+            meta = smeta;
+        }
         return this;
     }
 
@@ -782,7 +802,7 @@ public class ItemBuilder {
             }
 
             public Class<?> getCraftItemStackClass() {
-                String ver = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+                String ver = Bukkit.getServer().getClass().getPackage().getName().split(".")[3];
                 try {
                     return Class.forName("org.bukkit.craftbukkit." + ver + ".inventory.CraftItemStack");
                 } catch (ClassNotFoundException ex) {

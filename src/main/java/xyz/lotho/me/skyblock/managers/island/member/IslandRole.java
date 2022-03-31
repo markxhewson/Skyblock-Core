@@ -1,4 +1,4 @@
-package xyz.lotho.me.skyblock.managers.util;
+package xyz.lotho.me.skyblock.managers.island.member;
 
 import org.bukkit.ChatColor;
 

@@ -9,6 +9,7 @@ import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.command.Command;
 import xyz.lotho.me.skyblock.command.CommandSource;
 import xyz.lotho.me.skyblock.command.CompletableCommand;
+import xyz.lotho.me.skyblock.interfaces.IslandMembersMenu;
 import xyz.lotho.me.skyblock.managers.member.Member;
 import xyz.lotho.me.skyblock.utils.chat.Chat;
 
@@ -35,13 +36,7 @@ public class IslandMembersCommand extends Command implements CompletableCommand 
             return;
         }
 
-        member.getIsland().getMembersArray().forEach((object) -> {
-            object.forEach((uuid, role) -> {
-                OfflinePlayer offlinePlayer = Skyblock.getInstance().getServer().getOfflinePlayer(uuid);
-
-                player.sendMessage(offlinePlayer.getName() + " - " + role.getColor() + role.getIslandRole());
-            });
-        });
+        new IslandMembersMenu(Skyblock.getInstance(), member.getIsland().getIslandMemberManager()).open(player);
     }
 
     @Override
