@@ -44,7 +44,6 @@ public class IslandMembersMenu extends Menu {
 
             this.getInventory().setItem(startingIndex.getAndIncrement(),
                     new ItemBuilder(Material.PLAYER_HEAD)
-                            .owner(offlinePlayer)
                             .setDisplayname("&a" + offlinePlayer.getName())
                             .lore("&7Role: " + islandRole.getColor() + islandRole.getIslandRole()).build()
             );

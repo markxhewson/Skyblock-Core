@@ -50,6 +50,8 @@ public class IslandAcceptCommand extends Command implements CompletableCommand {
         member.setIsland(invite.getIslandToJoin());
         member.getIsland().addMember(player.getUniqueId(), IslandRole.ISLAND_MEMBER);
 
+        Skyblock.getInstance().getInviteManager().removeInvite(player.getUniqueId());
+
         member.getIsland().getIslandMemberManager().getIslandMembers().forEach(((uuid, islandMember) -> {
             Player islandPlayer = Skyblock.getInstance().getServer().getPlayer(uuid);
             if (islandPlayer == null) return;
