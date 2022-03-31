@@ -42,7 +42,7 @@ public class IslandInviteCommand extends Command implements CompletableCommand {
             return;
         }
 
-        if (member.getIsland().isMember(invitedPlayer.getUniqueId())) {
+        if (member.getIsland().getIslandMemberManager().isMember(invitedPlayer.getUniqueId())) {
             player.sendMessage(Chat.color("&c&l<!> &f" + invitedPlayer.getName() + " &cis already a member of your island!"));
             return;
         }

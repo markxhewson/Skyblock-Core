@@ -69,14 +69,6 @@ public class Island {
         return region.contains(BlockVector3.at(blockLocation.getX(), blockLocation.getBlockY(), blockLocation.getBlockZ()));
     }
 
-    public void addMember(UUID uuid, IslandRole islandRole) {
-        this.getIslandMemberManager().addMember(uuid, islandRole);
-    }
-
-    public boolean isMember(UUID uuid) {
-        return this.getIslandMemberManager().isMember(uuid);
-    }
-
     public void loadTheme() throws IOException {
         File defaultSchematic = new File(this.instance.getDataFolder().getAbsolutePath() + "/schematics/" + "endIsland" + ".schem");
 

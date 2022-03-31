@@ -49,7 +49,7 @@ public class IslandManager {
 
         Document membersDocument = document.get("members", new Document());
         membersDocument.forEach((uuid, role) -> {
-            island.addMember(UUID.fromString(uuid), IslandRole.valueOf(role.toString()));
+            island.getIslandMemberManager().addMember(UUID.fromString(uuid), IslandRole.valueOf(role.toString()));
         });
 
         island.setIslandID(document.getInteger("_id"));
@@ -79,7 +79,7 @@ public class IslandManager {
             island.setRadius(skyblockIsland.getRadius());
             island.setCreatedAt(System.currentTimeMillis());
 
-            island.addMember(player.getUniqueId(), IslandRole.ISLAND_OWNER);
+            island.getIslandMemberManager().addMember(player.getUniqueId(), IslandRole.ISLAND_OWNER);
 
             this.getIslandsArray().add(island);
             Document islandMembers = new Document();
