@@ -8,6 +8,7 @@ import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.command.Command;
 import xyz.lotho.me.skyblock.command.CommandSource;
 import xyz.lotho.me.skyblock.command.CompletableCommand;
+import xyz.lotho.me.skyblock.managers.island.invite.InviteManager;
 import xyz.lotho.me.skyblock.managers.island.member.IslandRole;
 import xyz.lotho.me.skyblock.managers.member.Member;
 import xyz.lotho.me.skyblock.utils.chat.Chat;
@@ -31,7 +32,7 @@ public class IslandInviteCommand extends Command implements CompletableCommand {
         Member member = Skyblock.getInstance().getMemberManager().getMember(player.getUniqueId());
 
         if (!member.hasIsland()) {
-            Skyblock.getInstance().getIslandManager().createIsland(player);
+            player.sendMessage(Chat.color("&c&l<!> &cYou do not have an island! &7/island create &cto create one!"));
             return;
         }
 
@@ -41,13 +42,20 @@ public class IslandInviteCommand extends Command implements CompletableCommand {
             return;
         }
 
-        Member invitedMember = Skyblock.getInstance().getMemberManager().getMember(invitedPlayer.getUniqueId());
-        invitedMember.setIsland(member.getIsland());
+        if (member.getIsland().isMember(invitedPlayer.getUniqueId())) {
+            player.sendMessage(Chat.color("&c&l<!> &f" + invitedPlayer.getName() + " &cis already a member of your island!"));
+            return;
+        }
 
-        member.getIsland().addMember(invitedPlayer.getUniqueId(), IslandRole.ISLAND_MEMBER);
-        player.sendMessage(Chat.color("&a&l<!> &aYou have added &f" + invitedPlayer.getName() + " &ato your island."));
+        InviteManager inviteManager = Skyblock.getInstance().getInviteManager();
+        if (inviteManager.isAlreadyInvited(member.getIsland())) {
+            player.sendMessage(Chat.color("&c&l<!> &cThis player already has a pending invite to join your island."));
+            return;
+        }
 
-        Skyblock.getInstance().getServer().getScheduler().runTaskAsynchronously(Skyblock.getInstance(), () -> member.getIsland().save());
+        inviteManager.createIslandInvite(player.getUniqueId(), invitedPlayer.getUniqueId(), member.getIsland());
+
+        invitedPlayer.sendMessage(Chat.color("&a&l<!> &aYou have received an invite from " + player.getName() + " &ato join their island! &7/island accept &ato accept!"));
     }
 
     @Override

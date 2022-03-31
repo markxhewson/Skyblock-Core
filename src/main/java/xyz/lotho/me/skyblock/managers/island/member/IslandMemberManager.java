@@ -27,4 +27,12 @@ public class IslandMemberManager {
 
         this.getIslandMembers().put(uuid, islandMember);
     }
+
+    public boolean isMember(UUID uuid) {
+        return this.getIslandMembers().containsKey(uuid);
+    }
+
+    public void removeMember(UUID uuid) {
+        this.getIslandMembers().remove(uuid);
+    }
 }

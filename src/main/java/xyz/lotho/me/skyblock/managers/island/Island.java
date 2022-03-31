@@ -73,6 +73,10 @@ public class Island {
         this.getIslandMemberManager().addMember(uuid, islandRole);
     }
 
+    public boolean isMember(UUID uuid) {
+        return this.getIslandMemberManager().isMember(uuid);
+    }
+
     public void loadTheme() throws IOException {
         File defaultSchematic = new File(this.instance.getDataFolder().getAbsolutePath() + "/schematics/" + "endIsland" + ".schem");
 

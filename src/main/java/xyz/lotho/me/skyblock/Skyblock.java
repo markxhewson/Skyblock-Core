@@ -3,6 +3,7 @@ package xyz.lotho.me.skyblock;
 import com.mongodb.client.model.Sorts;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,10 +16,13 @@ import xyz.lotho.me.skyblock.listeners.IslandProtectionListener;
 import xyz.lotho.me.skyblock.listeners.MemberListener;
 import xyz.lotho.me.skyblock.managers.island.Island;
 import xyz.lotho.me.skyblock.managers.island.IslandManager;
+import xyz.lotho.me.skyblock.managers.island.invite.InviteManager;
 import xyz.lotho.me.skyblock.managers.member.MemberManager;
+import xyz.lotho.me.skyblock.utils.chat.Chat;
 import xyz.lotho.me.skyblock.utils.world.VoidWorldGenerator;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 
 public final class Skyblock extends JavaPlugin {
@@ -40,6 +44,8 @@ public final class Skyblock extends JavaPlugin {
     private IslandManager islandManager;
     @Getter
     private MongoUtils mongoUtils;
+    @Getter
+    private InviteManager inviteManager;
 
     @Override
     public void onEnable() {
@@ -49,6 +55,7 @@ public final class Skyblock extends JavaPlugin {
         memberManager = new MemberManager(this);
         islandManager = new IslandManager(this);
         mongoUtils = new MongoUtils(this);
+        inviteManager = new InviteManager(this);
 
         this.islandWorld = this.getServer().getWorld("islands");
 
@@ -87,6 +94,21 @@ public final class Skyblock extends JavaPlugin {
                 island.save();
             }
         }, 20 * 60 * 60, 20 * 60 * 60); // task will run every hour to async save every island's updated data to the database
+
+        this.getServer().getScheduler().runTaskTimerAsynchronously(this, () -> this.getInviteManager().getInviteMap().forEach((uuid, invite) -> {
+            if (invite.getExpireTime() >= System.currentTimeMillis()) return;
+
+            OfflinePlayer inviter = this.getServer().getOfflinePlayer(invite.getInviter());
+            OfflinePlayer invitedPlayer = this.getServer().getPlayer(uuid);
+
+            if (invitedPlayer == null) return;
+
+            if (invitedPlayer.isOnline()) {
+                Objects.requireNonNull(invitedPlayer.getPlayer()).sendMessage(Chat.color("&c&l<!> &cYour invite from " + inviter.getName() + " &chas expired!"));
+            }
+
+            this.getInviteManager().removeInvite(uuid);
+        }), 20, 20);
     }
 
     @Override

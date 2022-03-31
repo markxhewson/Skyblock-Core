@@ -25,7 +25,8 @@ public class IslandCommand extends Command {
                 new IslandHomeCommand(),
                 new IslandResetCommand(),
                 new IslandMembersCommand(),
-                new IslandInviteCommand()
+                new IslandInviteCommand(),
+                new IslandAcceptCommand()
         );
     }
 
