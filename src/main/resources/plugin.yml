@@ -1,7 +1,7 @@
 name: Skyblock
 version: '${project.version}'
 main: xyz.lotho.me.skyblock.Skyblock
-api-version: 1.17
+api-version: 1.18
 depend: [ WorldEdit ]
-authors: [ markxhewson, Lotho ]
+authors: [ markxhewson, Lotho, Engineous ]
 description: A skyblock plugin for Minecraft.

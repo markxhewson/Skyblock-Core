@@ -1,0 +1,1 @@
+connection-string: "mongodb+srv://admin:admin@cluster0.cexgn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"

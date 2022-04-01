@@ -32,7 +32,7 @@ public class MongoManager {
 
     public void connect() {
         try {
-            mongoClient = MongoClients.create(new ConnectionString("mongodb+srv://admin:admin@cluster0.cexgn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"));
+            mongoClient = MongoClients.create(new ConnectionString(instance.getConfig().getString("connection-string")));
 
             mongoDatabase = mongoClient.getDatabase("skyblock");
 

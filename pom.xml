@@ -38,12 +38,14 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <!-- I'm not able to compile properly with this and it is unnecessary so I'll just comment it out for now
                         <configuration>
                             <relocations>
                                 <relocation>com.mongodb</relocation>
                                 <shadedPattern>xyz.lotho.me.skyblock.database</shadedPattern>
                             </relocations>
                         </configuration>
+                        -->
                     </execution>
                 </executions>
             </plugin>
@@ -80,8 +82,8 @@
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <artifactId>spigot-api</artifactId>
+            <version>1.18.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
