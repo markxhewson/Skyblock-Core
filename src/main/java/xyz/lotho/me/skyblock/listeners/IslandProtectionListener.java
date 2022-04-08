@@ -13,7 +13,7 @@ import xyz.lotho.me.skyblock.utils.chat.Chat;
 
 public class IslandProtectionListener implements Listener {
 
-    private Skyblock instance;
+    private final Skyblock instance;
 
     public IslandProtectionListener(Skyblock instance) {
         this.instance = instance;
@@ -23,6 +23,8 @@ public class IslandProtectionListener implements Listener {
     public void onIslandWorldBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Member member = this.instance.getMemberManager().getMember(player.getUniqueId());
+
+        if (member.isIslandProtectionBypass()) return;
 
         if (!member.hasIsland()) {
             if (player.getWorld().getName().equalsIgnoreCase("islands")) {
@@ -44,6 +46,8 @@ public class IslandProtectionListener implements Listener {
     public void onIslandWorldPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         Member member = this.instance.getMemberManager().getMember(player.getUniqueId());
+
+        if (member.isIslandProtectionBypass()) return;
 
         if (!member.hasIsland()) {
             if (player.getWorld().getName().equalsIgnoreCase("islands")) {

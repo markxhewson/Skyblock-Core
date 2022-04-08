@@ -1,6 +1,8 @@
 package xyz.lotho.me.skyblock.managers.member;
 
 import com.mongodb.client.model.Filters;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
@@ -9,23 +11,25 @@ import xyz.lotho.me.skyblock.managers.island.Island;
 
 import java.util.UUID;
 
+@Data
 public class Member {
 
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private final Skyblock instance;
 
-    @Getter @Setter
+    // Persisted //
     private int id;
-    @Getter @Setter
     private UUID uuid;
-    @Getter @Setter
     private Island island;
-    @Getter @Setter
     private long createdAt;
-    @Getter @Setter
     private long lastLogin;
 
-    @Getter @Setter
+    // Internal //
     private boolean loaded = false;
+
+    // Not persisted //
+    private boolean islandProtectionBypass = false;
 
     public Member(Skyblock instance, UUID uuid) {
         this.instance = instance;

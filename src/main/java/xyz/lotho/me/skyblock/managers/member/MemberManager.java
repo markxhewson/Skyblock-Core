@@ -1,5 +1,6 @@
 package xyz.lotho.me.skyblock.managers.member;
 
+import org.bukkit.entity.Player;
 import xyz.lotho.me.skyblock.Skyblock;
 import xyz.lotho.me.skyblock.managers.island.Island;
 
@@ -23,6 +24,8 @@ public class MemberManager {
     public void addMember(UUID uuid) {
         this.membersMap.put(uuid, new Member(this.instance, uuid));
     }
+
+    public Member getMember(Player player) { return getMember(player.getUniqueId()); }
 
     public Member getMember(UUID uuid) {
         return this.membersMap.get(uuid);

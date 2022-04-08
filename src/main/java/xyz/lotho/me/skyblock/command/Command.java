@@ -250,6 +250,13 @@ public abstract class Command {
     }
 
     /**
+     * @return {@code true} If a permission was set to this command.
+     */
+    public boolean requiresPermission() {
+        return !this.permission.isEmpty();
+    }
+
+    /**
      * @return {@code true} If player's are allowed to execute this command.
      */
     public boolean isPlayerPermitted() {
@@ -325,7 +332,7 @@ public abstract class Command {
             return;
         }
 
-        if (source == CommandSource.PLAYER && !sender.hasPermission(this.permission)) {
+        if (requiresPermission() && !sender.hasPermission(this.permission)) {
             sender.sendMessage(ChatColor.RED + "You have insufficient permissions to execute this command!");
             return;
         }

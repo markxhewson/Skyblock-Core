@@ -105,7 +105,7 @@ public class CommandAPI {
      */
     public static void registerCommand(Command command) {
         BukkitCommand bCommand = command.asBukkitCommand();
-        COMMAND_MAP.register("SkyBlock", bCommand);
+        COMMAND_MAP.register("Skyblock", bCommand);
 
         if (COMMODORE != null && command instanceof CompletableCommand) {
             COMMODORE.register(bCommand, ((CompletableCommand) command).getCompletions());

@@ -26,14 +26,16 @@ public class IslandCommand extends Command {
                 new IslandResetCommand(),
                 new IslandMembersCommand(),
                 new IslandInviteCommand(),
-                new IslandAcceptCommand()
+                new IslandAcceptCommand(),
+                new IslandBypassCommand()
         );
     }
 
     @Override
     protected void execute(CommandSender sender, String... args) throws Exception {
         this.getSubCommands().forEach(command -> {
-            sender.sendMessage(ChatColor.BLUE + "/is " + command.getName() + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + command.getDescription());
+            if (!command.requiresPermission() || sender.hasPermission(command.getPermission()))
+                sender.sendMessage(ChatColor.BLUE + "/is " + command.getName() + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + command.getDescription());
         });
 
         // todo: gui
